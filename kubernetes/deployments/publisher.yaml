@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publisher
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: publisher
+        track: stable
+        version: 1.0.0
+    spec:
+      containers:
+        - name: publisher
+          image: "RYANCOAL9999/DisSystem/publisher:1.0.0"
+          ports:
+            - name: http
+              containerPort: 3000
+            - name: health
+              containerPort: 3001
+          resources:
+            limits:
+              cpu: 0.2
+              memory: "10Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 81
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 81
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 1

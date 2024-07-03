@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: rabbitmq
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.9.9-management-alpine  # Replace with your desired RabbitMQ image
+          ports:
+            - containerPort: 5672  # AMQP port
+            - containerPort: 15672  # Management UI port
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "admin"  # Replace with your desired username
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "password"  # Replace with your desired password
+          volumeMounts:
+            - name: rabbitmq-data
+              mountPath: /var/lib/rabbitmq  # RabbitMQ data directory
+  volumeClaimTemplates:
+    - metadata:
+        name: rabbitmq-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi  # Adjust storage size as needed
