@@ -16,9 +16,9 @@ spec:
           image: "RYANCOAL9999/DisSystem/server:1.0.0"
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
             - name: health
-              containerPort: 81
+              containerPort: 8081
           resources:
             limits:
               cpu: 0.2
@@ -26,7 +26,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 81
+              port: 8081
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 15
@@ -34,7 +34,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /readiness
-              port: 81
+              port: 8081
               scheme: HTTP
             initialDelaySeconds: 5
             timeoutSeconds: 1
