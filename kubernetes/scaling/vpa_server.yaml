@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: server
+  namespace: default
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: server
+  updatePolicy:
+    updateMode: "Auto"
