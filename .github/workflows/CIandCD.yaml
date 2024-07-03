@@ -22,12 +22,40 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: 1.20
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install Dependencies for Server
+      working-directory: ./server
+      run: go mod tidy
+
+    - name: Build Server
+      working-directory: ./server
+      run: |
+        go build -o server
+
+    - name: Test Server
+      working-directory: ./server
+      run: |
+        go test -v ./...
+
+    - name: Install Dependencies for Publisher
+      working-directory: ./publisher
+      run: go mod tidy
 
     - name: Build Publisher
       working-directory: ./publisher
@@ -39,15 +67,10 @@ jobs:
       run: |
         go test -v ./...
 
-    - name: Build Server
-      working-directory: ./server
+    - name: Lint Go code
       run: |
-        go build -o server
-
-    - name: Test Server
-      working-directory: ./server
-      run: |
-        go test -v ./...
+        go install golang.org/x/lint/golint@latest
+        golint ./...
 
     # - name: Build Docker images
     #   run: |
@@ -62,4 +85,3 @@ jobs:
     #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
     #     docker push app/publisher
     #     docker push app/server
-    
