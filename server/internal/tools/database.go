@@ -10,6 +10,11 @@ type LoginDetails struct {
 	Username  string
 }
 
+type CoinDetails struct {
+	Coins    int64
+	Username string
+}
+
 type UserHearts struct {
 	Heart    string
 	Username string

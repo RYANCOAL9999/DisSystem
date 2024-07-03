@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/RYANCOAL9999/DisSystem/api"
-	"github.com/RYANCOAL9999/DisSystem/internal/tools"
+	"github.com/RYANCOAL9999/DisSystem/server/api"
+	"github.com/RYANCOAL9999/DisSystem/server/internal/tools"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,8 +31,7 @@ func Authorization(next http.Handler) http.Handler {
 			return
 		}
 
-		var loginDetails *tools.LoginDetails
-		loginDetails = (*database).GetUserLoginDetails(username)
+		var loginDetails = (*database).GetUserLoginDetails(username)
 
 		if loginDetails == nil || (token != (*loginDetails).AuthToken) {
 			log.Error(UnAuthorizedError)

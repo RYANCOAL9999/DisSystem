@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/RYANCOAL9999/DisSystem/server/internal/handlers"
+	"github.com/RYANCOAL9999/DisSystem/publisher/internal/handlers"
 	"github.com/go-chi/chi"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
@@ -36,8 +36,6 @@ func RabbitMQConnect() (*amqp.Connection, *amqp.Channel, error) {
 
 func main() {
 
-	log.SetReportCaller(true)
-
 	connection, channel, err := RabbitMQConnect()
 
 	if err != nil {
@@ -54,18 +52,14 @@ func main() {
 
 	fmt.Println("Starting Go API service...")
 
-	go func() {
-		handlers.Consume("myQueue", channel)
-	}()
-
 	fmt.Println(`
-	______     ______        ______     ______   __    
-   /\  ___\   /\  __ \      /\  __ \   /\  == \ /\ \   
-   \ \ \__ \  \ \ \/\ \     \ \  __ \  \ \  _-/ \ \ \  
-	\ \_____\  \ \_____\     \ \_\ \_\  \ \_\    \ \_\ 
-	 \/_____/   \/_____/      \/_/\/_/   \/_/     \/_/ `)
+		______     ______        ______     ______   __
+	   /\  ___\   /\  __ \      /\  __ \   /\  == \ /\ \
+	   \ \ \__ \  \ \ \/\ \     \ \  __ \  \ \  _-/ \ \ \
+		\ \_____\  \ \_____\     \ \_\ \_\  \ \_\    \ \_\
+		 \/_____/   \/_____/      \/_/\/_/   \/_/     \/_/ `)
 
-	listenErr := http.ListenAndServe("localhost:8080", r)
+	listenErr := http.ListenAndServe("localhost:3000", r)
 
 	if listenErr != nil {
 		log.Error(listenErr)

@@ -3,11 +3,20 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"sync"
+
+	"github.com/RYANCOAL9999/DisSystem/server/internal/tools"
 )
 
 // Coint Balance Params
 type Params struct {
 	Username string
+}
+
+type OkayResponse struct {
+
+	//Success Code, Ususally 200
+	Code int
 }
 
 type UserHeartsResponse struct {
@@ -47,3 +56,7 @@ var RequestErrorHandler = func(w http.ResponseWriter, err error) {
 var InternalErrorHandler = func(w http.ResponseWriter) {
 	writeError(w, "An Unexpected Error Occurred.", http.StatusInternalServerError)
 }
+
+var Messages []tools.CoinDetails
+
+var MessagesLock sync.Mutex

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/RYANCOAL9999/DisSystem/api"
-	"github.com/RYANCOAL9999/DisSystem/internal/tools"
+	"github.com/RYANCOAL9999/DisSystem/server/api"
+	"github.com/RYANCOAL9999/DisSystem/server/internal/tools"
 	"github.com/gorilla/schema"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,6 +27,7 @@ func GetUserHearts(writer http.ResponseWriter, request *http.Request) {
 	var database *tools.DatabaseInterface
 	database, err = tools.NewDatabase()
 	if err != nil {
+		log.Error(err)
 		api.InternalErrorHandler(writer)
 		return
 	}

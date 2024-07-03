@@ -9,11 +9,11 @@ RUN GOSUMDB=off go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOPROXY=direct GOSUMDB=off go build -o consumer .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOPROXY=direct GOSUMDB=off go build -o publisher .
 
 # final stage
 FROM alpine:3.12 as production
 
-COPY --from=builder /app/consumer /app/consumer
+COPY --from=builder /app/publisher /app/publisher
 
-CMD ["/app/consumer"]
+CMD ["/app/publisher"]

@@ -1,4 +1,4 @@
-module github.com/RYANCOAL9999/DisSystem
+module github.com/RYANCOAL9999/DisSystem/server
 
 go 1.21
 
