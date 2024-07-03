@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/RYANCOAL9999/DisSystem/server/api"
@@ -10,32 +9,30 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var UnAuthorizedError = errors.New(fmt.Sprintf("Invalid username or token."))
-
 func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var username string = r.URL.Query().Get("username")
-		var token = r.Header.Get("Authorization")
-		var err error
+		username := r.URL.Query().Get("username")
+		token := r.Header.Get("Authorization")
+		errUnAuthorized := errors.New("unauthorized access")
 
 		if username == "" {
-			api.RequestErrorHandler(w, UnAuthorizedError)
+			api.RequestErrorHandler(w, errUnAuthorized)
 			return
 		}
 
 		var database *tools.DatabaseInterface
-		database, err = tools.NewDatabase()
+		database, err := tools.NewDatabase()
 		if err != nil {
 			api.InternalErrorHandler(w)
 			return
 		}
 
-		var loginDetails = (*database).GetUserLoginDetails(username)
+		var loginDetails *tools.LoginDetails = (*database).GetUserLoginDetails(username)
 
 		if loginDetails == nil || (token != (*loginDetails).AuthToken) {
-			log.Error(UnAuthorizedError)
-			api.RequestErrorHandler(w, UnAuthorizedError)
+			log.Error(errUnAuthorized)
+			api.RequestErrorHandler(w, errUnAuthorized)
 			return
 		}
 

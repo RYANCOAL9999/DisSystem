@@ -50,7 +50,7 @@ func main() {
 
 	handlers.Handler(r, channel)
 
-	fmt.Println("Starting Go API service...")
+	fmt.Println("Starting Go PUBLISHER API service...")
 
 	fmt.Println(`
 		______     ______        ______     ______   __

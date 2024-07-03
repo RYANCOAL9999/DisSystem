@@ -6,7 +6,7 @@ import (
 
 	"github.com/RYANCOAL9999/DisSystem/publisher/api"
 	"github.com/RYANCOAL9999/DisSystem/publisher/internal/tools"
-	"github.com/gorilla/schema"
+	"github.com/go-chi/chi"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
@@ -40,36 +40,30 @@ func Publish(queueName string, channel *amqp.Channel, params *tools.CoinDetails)
 
 func GetCoinBalance(queueName string, writer http.ResponseWriter, request *http.Request, channel *amqp.Channel) {
 
-	var params api.Params
-	var decoder = schema.NewDecoder()
-
-	err := decoder.Decode(&params, request.URL.Query())
-	if err != nil {
-		http.Error(writer, "Failed to decode query parameters", http.StatusBadRequest)
-		return
-	}
-
-	var response = api.CoinBalanceResponse{
-		Code: http.StatusOK,
-	}
+	var username string = chi.URLParam(request, "username")
+	response := api.CoinBalanceResponse{Code: http.StatusOK}
+	var err error
 
 	writer.Header().Set("Content-Type", "application/json")
+
 	err = json.NewEncoder(writer).Encode(response)
+
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
 	// Initialize the database
-	database, err := tools.NewDatabase()
+	var database *tools.DatabaseInterface
+	database, err = tools.NewDatabase()
 	if err != nil {
 		log.Printf("Error initializing database: %v\n", err)
 		return
 	}
 
-	var tokenDetails = (*database).GetUserCoins(params.Username)
+	var tokenDetails *tools.CoinDetails = (*database).GetUserCoins(username)
 	if tokenDetails == nil {
-		log.Printf("Error retrieving user coins for username: %s\n", params.Username)
+		log.Printf("Error retrieving user coins for username: %s\n", username)
 		return
 	}
 

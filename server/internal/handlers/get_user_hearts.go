@@ -32,7 +32,7 @@ func GetUserHearts(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	var UserHearts = (*database).GetUserHearts(params.Username)
+	var UserHearts *tools.UserHearts = (*database).GetUserHearts(params.Username)
 	if UserHearts == nil {
 		log.Error(err)
 		api.InternalErrorHandler(writer)

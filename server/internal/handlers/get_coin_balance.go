@@ -62,11 +62,10 @@ func Consume(queueName string, channel *amqp.Channel) {
 
 func GetCoinBalance(queueName string, writer http.ResponseWriter, request *http.Request, channel *amqp.Channel) {
 
-	var params = api.Params{}
-	var decoder *schema.Decoder = schema.NewDecoder()
+	params := api.Params{}
 	var err error
 
-	err = decoder.Decode(&params, request.URL.Query())
+	err = schema.NewDecoder().Decode(&params, request.URL.Query())
 
 	if err != nil {
 		log.Error(err)
@@ -75,7 +74,7 @@ func GetCoinBalance(queueName string, writer http.ResponseWriter, request *http.
 	}
 
 	// Call the external service
-	externalURL := fmt.Sprintf("http://localhost:3000/user/%s/coins", params.Username)
+	externalURL := fmt.Sprintf("http://localhost:3000/%s/coins", params.Username)
 	resp, err := http.Get(externalURL)
 	if err != nil {
 		log.Error(err)
@@ -83,9 +82,7 @@ func GetCoinBalance(queueName string, writer http.ResponseWriter, request *http.
 		return
 	}
 
-	var response = api.OkayResponse{
-		Code: resp.StatusCode,
-	}
+	response := api.OkayResponse{Code: resp.StatusCode}
 
 	writer.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(writer).Encode(response)

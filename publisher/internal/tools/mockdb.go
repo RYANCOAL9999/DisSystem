@@ -23,9 +23,8 @@ var mockCoinDetails = map[string]CoinDetails{
 
 func (d *mockDB) GetUserCoins(username string) *CoinDetails {
 	// Simulate DB call
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second * 50)
 
-	var clientData = CoinDetails{}
 	clientData, ok := mockCoinDetails[username]
 	if !ok {
 		return nil

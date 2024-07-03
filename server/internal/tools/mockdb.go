@@ -51,7 +51,7 @@ func (d *mockDB) GetUserLoginDetails(username string) *LoginDetails {
 
 func (d *mockDB) GetUserHearts(username string) *UserHearts {
 	// Simulate DB call
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second * 10)
 
 	var clientData = UserHearts{}
 	clientData, ok := mockUserHeart[username]
